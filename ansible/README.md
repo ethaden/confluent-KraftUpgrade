@@ -73,7 +73,7 @@ docker compose exec ansible ansible-playbook -i /etc/ansible/hosts.yml confluent
 Validate data migrated:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --list
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --list
 ```
 
 **Note: At this point you could still rollback to ZK. For that check:** https://docs.confluent.io/ansible/current/ansible-migrate-kraft.html#roll-back-to-zk 
