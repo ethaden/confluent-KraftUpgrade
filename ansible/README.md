@@ -8,17 +8,20 @@ The setup starts with 3 ZK and 1 Broker.
 
 We have adapted the steps listed here: https://github.com/rjmfernandes/local-ansible-cp
 
-Create the image (from the work by Jeff Geerling https://github.com/geerlingguy/docker-ubuntu2204-ansible):
-
-```bash
-docker build . -t my-geerlingguy-docker-ubuntu-ansible
-```
-
-Clone CP Ansible git repo:
+First, clone CP Ansible git repo:
 
 ```bash
 git clone https://github.com/confluentinc/cp-ansible.git
 ```
+
+Then, start the docker conatiners. Note, that `docker compose` will automatically create an image (derived from the work by Jeff Geerling https://github.com/geerlingguy/docker-ubuntu2204-ansible). This will take some time, though:
+
+```bash
+docker compose up -d
+```
+
+While waiting for docker to finish, set up the next things.
+
 Inside the repository you need to copy the playbooks to root:
 
 ```bash
@@ -46,31 +49,10 @@ Edit the variables of hosts.yml as the example here. Pay attention to the follow
 
 You will also want to make sure the server instances in hosts.yml match the ones defined in the docker-compose.yml file (just like the example here). Keep commented out the kafka_controller entries in the hosts.yml.
 
-Finally run the docker-compose from the root of the project:
+Finally back to the `ansible` sub folder, we use `docker compose` for convenience to run the playbook inside of the container `ansible` which was just spawned for the purpose of running ansible commands:
 
 ```bash
-cd ..
-docker compose up -d
-```
-
-You will need to map the host names on your `/etc/hosts` file:
-
-```
-127.0.0.1 zk1
-127.0.0.1 zk2
-127.0.0.1 zk3
-127.0.0.1 kafka1
-127.0.0.1 kc1
-127.0.0.1 kc2
-127.0.0.1 kc3
-```
-
-Finally back to the cp-ansible cloned repository run:
-
-```bash
-cd cp-ansible
-ansible-galaxy collection install git+https://github.com/confluentinc/cp-ansible.git,7.6.x
-ansible-playbook ./all.yml -i hosts.yml
+docker compose exec ansible ansible-playbook /etc/ansible/cp-ansible/all.yml -i /etc/ansible/cp-ansible/hosts.yml
 ```
 
 Create a topic:
