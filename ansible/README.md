@@ -8,12 +8,6 @@ The setup starts with 3 ZK and 1 Broker.
 
 We have adapted the steps listed here: https://github.com/rjmfernandes/local-ansible-cp
 
-First, clone CP Ansible git repo:
-
-```bash
-git clone https://github.com/confluentinc/cp-ansible.git
-```
-
 Then, start the docker conatiners. Note, that `docker compose` will automatically create an image (derived from the work by Jeff Geerling https://github.com/geerlingguy/docker-ubuntu2204-ansible). This will take some time, though:
 
 ```bash
@@ -47,21 +41,21 @@ docker compose exec ansible ansible-playbook /etc/ansible/cp-ansible/all.yml -i 
 Create a topic:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --topic test --create --partitions 1 --replication-factor 1
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --topic test --create --partitions 1 --replication-factor 1
 ```
 
 For listing topics you can also execute:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --list
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --list
 ```
 
 # 1-3. Enable migration flag / Add kafka_controller hosts / Run migration playbook
 
-Copy [1-hosts.yml](./1-hosts.yml) as hosts.yml into the cp-ansible folder:
+Copy [1-hosts.yml](./1-hosts.yml) as hosts.yml into the cp-ansible folder (you can always get the original version back by running `git checkout hosts.yml`):
 
 ```bash
-cp ../1-hosts.yml ./hosts.yml
+cp 1-hosts.yml hosts.yml
 ```
 
 It enables the `kraft_migration` and add the 3 kraft controllers hosts.
@@ -73,8 +67,7 @@ For running the migration playbook you can do in steps or at once.
 Migrate to Dual Write Mode:
 
 ```bash
-ansible-playbook -i hosts.yml confluent.platform.ZKtoKraftMigration.yml \
-  --tags migrate_to_dual_write
+docker compose exec ansible ansible-playbook -i /etc/ansible/hosts.yml confluent.platform.ZKtoKraftMigration.yml --tags migrate_to_dual_write
 ```
 
 Validate data migrated:
@@ -88,27 +81,26 @@ kafka-topics --bootstrap-server kafka1:9092 --list
 Complete migration:
 
 ```bash
-ansible-playbook -i hosts.yml confluent.platform.ZKtoKraftMigration.yml \
-  --tags migrate_to_kraft
+docker compose exec ansible ansible-playbook -i /etc/ansible/hosts.yml confluent.platform.ZKtoKraftMigration.yml   --tags migrate_to_kraft
 ```
 
 Validate again:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --list
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --list
 ```
 
 
 ### 3.2. Migrate in one step
 
 ```bash
-ansible-playbook -i hosts.yml confluent.platform.ZKtoKraftMigration.yml
+docker compose exec ansible ansible-playbook -i /etc/ansible/hosts.yml confluent.platform.ZKtoKraftMigration.yml
 ```
 
 Validate:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --list
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --list
 ```
 
 ## 4 - Stop ZK 
@@ -118,7 +110,7 @@ Now you can execute:
 ```bash
 cd ..
 docker compose down -v zk1 zk2 zk3
-cp 4-hosts.yml cp-ansible/hosts.yml
+cp 4-hosts.yml hosts.yml
 ```
 
 (The last command just updates the hosts.yml without ZK entries.)
@@ -126,7 +118,7 @@ cp 4-hosts.yml cp-ansible/hosts.yml
 And validate:
 
 ```bash
-kafka-topics --bootstrap-server kafka1:9092 --list
+docker compose exec kafka1 kafka-topics --bootstrap-server kafka1:9092 --list
 ```
 
 ## Cleanup
@@ -135,6 +127,10 @@ To cleanup and come back to start just execute:
 
 ```bash
 docker compose down -v 
-rm -fr cp-ansible
 ```
 
+Resetting your git workspace can be done as usual by running:
+
+```
+git reset --hard main
+```

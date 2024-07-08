@@ -82,7 +82,7 @@ services:
     container_name: ansible
     command: "/usr/bin/bash -c \"sleep infinity\""
     volumes:
-      - ./cp-ansible:/etc/ansible:rw
+      #- ./cp-ansible:/etc/ansible:rw
       - ./hosts.yml:/etc/ansible/hosts.yml:rw
       - ./ansible.cfg:/etc/ansible/ansible.cfg:rw
       # Required as ansible will use docker to control the other nodes
