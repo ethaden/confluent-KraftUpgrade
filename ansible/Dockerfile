@@ -44,7 +44,7 @@ RUN apt-get update \
     && mkdir -p /etc/ansible \
     && echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts \
     && printf "[defaults]\nhash_behaviour=merge\n" > /etc/ansible/ansible.cfg \
-    && ansible-galaxy collection install git+https://github.com/confluentinc/cp-ansible.git,7.6.x \
+    && ansible-galaxy collection install git+https://github.com/confluentinc/cp-ansible.git,7.6.0 \
     # Remove unnecessary getty and udev targets that result in high CPU usage when using
     # multiple containers with Molecule (https://github.com/ansible/molecule/issues/1104)
     && rm -f /lib/systemd/system/systemd*udev* \

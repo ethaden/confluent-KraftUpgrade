@@ -22,13 +22,6 @@ docker compose up -d
 
 While waiting for docker to finish, set up the next things.
 
-Inside the repository you need to copy the playbooks to root:
-
-```bash
-cd cp-ansible
-cp -fr playbooks/* .
-```
-
 If you are not using the version of the config file provided in this environment, edit the variables of hosts.yml as in the example here. Pay attention to the following variables:
 
 ```yml
@@ -40,6 +33,8 @@ If you are not using the version of the config file provided in this environment
     ansible_python_interpreter: /usr/bin/python3
     custom_java_path: /usr/lib/jvm/java-17-openjdk-arm64
 ```
+
+Please also have a look at the file `ansible.cfg` which will be mounted to the special docker container called `ansible` we use to run the playbooks.
 
 You will also want to make sure the server instances in hosts.yml match the ones defined in the docker-compose.yml file (just like the example here). Keep commented out the kafka_controller entries in the hosts.yml.
 
