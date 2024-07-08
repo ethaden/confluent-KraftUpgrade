@@ -25,6 +25,10 @@ RUN apt-get update \
        openjdk-17-jdk \
        apt-transport-https \
        git \
+       inetutils-ping \
+       bind9-host \
+       docker.io \
+       vim \
     && apt-get clean \
     && rm -Rf /var/lib/apt/lists/* \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man \
@@ -39,6 +43,7 @@ RUN apt-get update \
     # Install Ansible inventory file.
     && mkdir -p /etc/ansible \
     && echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts \
+    && printf "[defaults]\nhash_behaviour=merge\n" > /etc/ansible/ansible.cfg \
     && ansible-galaxy collection install git+https://github.com/confluentinc/cp-ansible.git,7.6.x \
     # Remove unnecessary getty and udev targets that result in high CPU usage when using
     # multiple containers with Molecule (https://github.com/ansible/molecule/issues/1104)

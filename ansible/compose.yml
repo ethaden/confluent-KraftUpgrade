@@ -84,3 +84,5 @@ services:
     volumes:
       - ./cp-ansible:/etc/ansible/cp-ansible:rw
       - ./hosts.yml:/etc/ansible/cp-ansible/hosts.yml:rw
+      # Required as ansible will use docker to control the other nodes
+      - /var/run/docker.sock:/var/run/docker.sock:rw

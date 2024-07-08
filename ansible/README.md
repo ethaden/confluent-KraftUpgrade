@@ -29,13 +29,7 @@ cd cp-ansible
 cp -fr playbooks/* .
 ```
 
-Copy hosts.yml to cp-ansible.
-
-```bash
-cp ../hosts.yml .
-```
-
-Edit the variables of hosts.yml as the example here. Pay attention to the following variables:
+If you are not using the version of the config file provided in this environment, edit the variables of hosts.yml as in the example here. Pay attention to the following variables:
 
 ```yml
     ansible_connection: docker
