@@ -35,7 +35,7 @@ You will also want to make sure the server instances in hosts.yml match the ones
 Finally back to the `ansible` sub folder, we use `docker compose` for convenience to run the playbook inside of the container `ansible` which was just spawned for the purpose of running ansible commands:
 
 ```bash
-docker compose exec ansible ansible-playbook /etc/ansible/cp-ansible/all.yml -i /etc/ansible/cp-ansible/hosts.yml
+docker compose exec ansible ansible-playbook -i /etc/ansible/hosts.yml confluent.platform.all
 ```
 
 Create a topic:
